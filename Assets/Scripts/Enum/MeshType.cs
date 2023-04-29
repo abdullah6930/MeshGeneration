@@ -1,6 +1,9 @@
-public enum MeshType 
+namespace abdullahqadeer.MeshGenerator
 {
-    Quad,
-    Box,
-    Terrain
+    public enum MeshType
+    {
+        Quad,
+        Box,
+        Terrain
+    }
 }

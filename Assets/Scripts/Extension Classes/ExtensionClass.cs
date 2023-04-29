@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public static class ExtensionClass
+namespace abdullahqadeer.Extensions
 {
-    public static Vector3 TransformWorldPoint(this Transform transform, Vector3 vertex)
+    public static class ExtensionClass
     {
-        var localToWorld = transform.localToWorldMatrix;
+        public static Vector3 TransformWorldPoint(this Transform transform, Vector3 vertex)
+        {
+            var localToWorld = transform.localToWorldMatrix;
 
-        return localToWorld.MultiplyPoint3x4(vertex);
+            return localToWorld.MultiplyPoint3x4(vertex);
+        }
     }
 }
