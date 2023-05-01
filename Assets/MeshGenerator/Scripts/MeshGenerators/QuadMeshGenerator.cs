@@ -16,8 +16,6 @@ namespace AbdullahQadeer.MeshGenerator.Generator
 
         protected override void Initialize(float width, float height, float volume = 0)
         {
-            ThisMeshType = MeshGeneratorType.Quad;
-
             Vector3[] vertices = new Vector3[4]
             {
             new Vector3(width, height, 0),
@@ -60,6 +58,24 @@ namespace AbdullahQadeer.MeshGenerator.Generator
             GeneratedMesh.SetUVs(0, uv);
 
             MeshFilter.mesh = GeneratedMesh;
+        }
+
+        public override void UpdateWidth(float value)
+        {
+            Width = value;
+            Initialize(Width, Height, Volume);
+        }
+
+        public override void UpdateHeight(float value)
+        {
+            Height = value;
+            Initialize(Width, Height, Volume);
+        }
+
+        public override void UpdateVolume(float value)
+        {
+            Volume = value;
+            Initialize(Width, Height, Volume);
         }
     }
 }

@@ -21,6 +21,11 @@ namespace AbdullahQadeer.MeshGenerator.UI
             IsShowing = false;
         }
 
+        public void SetActive(bool value)
+        {
+            gameObject.SetActive(value);
+        }
+
         public void Show()
         {
             UIManager.Instance.Show(PanelType);

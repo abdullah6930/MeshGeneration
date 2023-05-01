@@ -11,7 +11,19 @@ namespace AbdullahQadeer.MeshGenerator.UI
         private Dictionary<UIPanelType, UIPanel> panels = new Dictionary<UIPanelType, UIPanel>();
         private List<UIPanel> activePanels = new List<UIPanel>();
 
-        // Start is called before the first frame update
+        private void Awake()
+        {
+            if(Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
+        }
+
         void Start()
         {
             var panelsList = GetComponentsInChildren<UIPanel>(true);
@@ -20,6 +32,12 @@ namespace AbdullahQadeer.MeshGenerator.UI
                 if (panels.ContainsKey(panel.PanelType))
                     continue;
                 panels.Add(panel.PanelType, panel);
+            }
+
+            var panelInstance = panels[UIPanelType.MeshGeneratorUI];
+            if (!activePanels.Contains(panelInstance))
+            {
+                activePanels.Add(panelInstance);
             }
         }
 
@@ -35,7 +53,7 @@ namespace AbdullahQadeer.MeshGenerator.UI
                     var activePanel = activePanels[i];
                     if (activePanel != null && activePanel.PanelType != panelType)
                     {
-                        activePanel.enabled = false;
+                        activePanel.SetActive(false);
                         activePanels.RemoveAt(i);
                     }
                 }
@@ -45,7 +63,7 @@ namespace AbdullahQadeer.MeshGenerator.UI
                     activePanels.Add(panelInstance);
                 }
 
-                panelInstance.enabled = true;
+                panelInstance.SetActive(true);
             }
         }
 
@@ -53,7 +71,7 @@ namespace AbdullahQadeer.MeshGenerator.UI
         {
             if (panels.TryGetValue(panelType, out var panelInstance))
             {
-                panelInstance.enabled = false;
+                panelInstance.SetActive(false);
                 activePanels.Remove(panelInstance);
             }
         }

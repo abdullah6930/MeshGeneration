@@ -5,7 +5,6 @@ namespace AbdullahQadeer.MeshGenerator.Generator
 {
     public abstract class BaseMeshGenerator : IDisposable
     {
-        public MeshGeneratorType ThisMeshType { protected set; get; }
         public Mesh GeneratedMesh { private set; get; } = null;
         public MeshFilter MeshFilter { private set; get; } = null;
         public GameObject ThisGameObject { private set; get; }
@@ -51,6 +50,11 @@ namespace AbdullahQadeer.MeshGenerator.Generator
         }
         protected abstract void Initialize(float width, float height, float volume = 0);
 
+        public abstract void UpdateWidth(float value);
+        public abstract void UpdateHeight(float value);
+        public abstract void UpdateVolume(float value);
+
+        #region Object Dispose
         public void Dispose()
         {
             Dispose(true);
@@ -78,5 +82,6 @@ namespace AbdullahQadeer.MeshGenerator.Generator
         {
             Dispose(false);
         }
+        #endregion Object Dispose
     }
 }

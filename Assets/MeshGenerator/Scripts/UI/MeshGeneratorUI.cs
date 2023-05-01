@@ -1,4 +1,5 @@
 using AbdullahQadeer.MeshGenerator.Generator;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,35 +7,116 @@ namespace AbdullahQadeer.MeshGenerator.UI
 {
     public class MeshGeneratorUI : UIPanel
     {
-        [SerializeField] Button generateMeshButton;
+        [SerializeField] Button selectButton;
+        [SerializeField] TMP_InputField widthInputField, heightInputField, volumeInputField;
+        [SerializeField] DropdownMeshType meshTypeDropDown;
 
         private BaseMeshGenerator currentMeshGenerator = null;
         private MeshPreset currentMeshPreset = null;
 
-        // Start is called before the first frame update
         void Start()
         {
-            generateMeshButton.onClick.AddListener(OnGenerateeMeshClick);
-            Initialize();
+            selectButton.onClick.AddListener(OnSelectClick);
+            widthInputField.onValueChanged.AddListener(OnWidthValueChange);
+            heightInputField.onValueChanged.AddListener(OnHeightValueChange);
+            volumeInputField.onValueChanged.AddListener(OnVolumeValueChange);
+            InitializeDropdown();
         }
 
         private void OnDestroy()
         {
-            generateMeshButton.onClick.RemoveAllListeners();
+            selectButton.onClick.RemoveAllListeners();
+            widthInputField.onValueChanged.RemoveAllListeners();
+            heightInputField.onValueChanged.RemoveAllListeners();
+            volumeInputField.onValueChanged.RemoveAllListeners();
         }
 
-        private void Initialize()
+        private void GenerateMesh(MeshGeneratorType meshGeneratorType)
         {
-            if (MeshGeneratorDataLoader.Instance.TryGetMeshPreset(MeshGeneratorType.Box, out var meshPreset))
+            if (MeshGeneratorDataLoader.Instance.TryGetMeshPreset(meshGeneratorType, out var meshPreset))
             {
                 currentMeshPreset = meshPreset;
-                currentMeshGenerator = MeshGeneratorFactory.CreateMeshGenerator(MeshGeneratorType.Box, meshPreset, MeshGeneratorType.Box.ToString());
+                UpdateInputFieldValues();
+
+                if (currentMeshGenerator != null)
+                    currentMeshGenerator.Dispose();
+                currentMeshGenerator = MeshGeneratorFactory.CreateMeshGenerator(meshGeneratorType, meshPreset, meshGeneratorType.ToString());
             }
         }
 
-        private void OnGenerateeMeshClick()
+        private void OnSelectClick()
         {
-            EvenManager.OnGenerateMeshClickEvent?.Invoke();
+            UIManager.Instance.Show(UIPanelType.MainViewerUI);
         }
+
+        #region Dropdown list
+        void InitializeDropdown()
+        {
+            meshTypeDropDown.ClearOptions();
+            foreach(var meshPreset in MeshGeneratorDataLoader.Instance.MeshPresetsList)
+            {
+                meshTypeDropDown.AddOption(meshPreset);
+            }
+            meshTypeDropDown.onValueChanged.AddListener(OnMeshTypeDropDownValueChange);
+            meshTypeDropDown.SetValueWithoutNotify(1);
+            meshTypeDropDown.onValueChanged.Invoke(1);
+        }
+
+        void OnMeshTypeDropDownValueChange(int value)
+        {
+            var meshGeneratorType = meshTypeDropDown.GetOption(value);
+            GenerateMesh(meshGeneratorType);
+        }
+        #endregion Dropdown list
+
+        #region Input Fields
+        void UpdateInputFieldValues()
+        {
+            if (currentMeshPreset == null)
+                return;
+            widthInputField.text = currentMeshPreset.width.ToString();
+            heightInputField.text = currentMeshPreset.height.ToString();
+            volumeInputField.text = currentMeshPreset.volume.ToString();
+        }
+
+        void OnWidthValueChange(string value)
+        {
+            if(currentMeshGenerator == null)
+            {
+                return;
+            }
+            
+            if(float.TryParse(value, out float floatVal))
+            {
+                currentMeshGenerator.UpdateWidth(floatVal);
+            }
+        }
+
+        void OnHeightValueChange(string value)
+        {
+            if (currentMeshGenerator == null)
+            {
+                return;
+            }
+
+            if (float.TryParse(value, out float floatVal))
+            {
+                currentMeshGenerator.UpdateHeight(floatVal);
+            }
+        }
+
+        void OnVolumeValueChange(string value)
+        {
+            if (currentMeshGenerator == null)
+            {
+                return;
+            }
+
+            if (float.TryParse(value, out float floatVal))
+            {
+                currentMeshGenerator.UpdateVolume(floatVal);
+            }
+        }
+        #endregion Input Fields
     }
 }

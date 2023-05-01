@@ -39,6 +39,6 @@ namespace AbdullahQadeer.MeshGenerator
     public class MeshPreset
     {
         public MeshGeneratorType meshType;
-        public int width, height, volume;
+        public float width, height, volume;
     }
 }
