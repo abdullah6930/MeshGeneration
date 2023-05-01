@@ -15,6 +15,7 @@ Currently user's in unity can change mesh vertices only in edit mode that too wi
 3. Pyramid
 
 # Targets for the future
-1. Terrain Generation
-2. Buildings Generation
+1. Ability to change vertex positions of any custom mesh.
+2. Terrain Generation
 3. Ability to save shapes locally
+4. Buildings Generation
