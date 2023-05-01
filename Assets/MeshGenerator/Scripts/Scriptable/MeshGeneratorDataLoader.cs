@@ -20,12 +20,17 @@ namespace AbdullahQadeer.MeshGenerator
         }
         #endregion
 
-        public GameObject X_AxisGizmos, Y_AxisGizmos, Z_AxisGizmos;
+        public GameObject Default_AxisGizmos;
 
         [Header("TAGS")]
         public string DEFAULT_GIZMOS;
         public string X_AXIS_GIZMOS, Y_AXIS_GIZMOS, Z_AXIS_GIZMOS;
+        
+        [Space]
+        public LayerMask GizmosLayerMask;
+        public float SphereSize = 0.2f;
 
+        [Space]
         public MeshPreset[] MeshPresetsList;
 
         public bool TryGetMeshPreset(MeshGeneratorType meshType, out MeshPreset meshPreset)

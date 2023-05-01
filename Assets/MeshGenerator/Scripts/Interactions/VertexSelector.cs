@@ -1,20 +1,19 @@
 using AbdullahQadeer.Extensions;
+using AbdullahQadeer.MeshGenerator.Generator;
 using UnityEngine;
 
 namespace AbdullahQadeer.MeshGenerator
 {
     public class VertexSelector : MonoBehaviour
     {
-        Camera mainCamera;
-        public LayerMask GizmosLayerMask;
-
-        Vector3[] vertices;
-
-        bool vertexFound = false;
-        int currentVertexIndex = -1;
-        GameObject currentGizmos, currentGizmosParent;
-        GizmosType currentGizmosType = GizmosType.Default;
-        public bool checkvertices = false;
+        private Camera mainCamera;
+        private LayerMask GizmosLayerMask;
+        private Vector3[] vertices;
+        private bool vertexFound, checkvertices;
+        private int currentVertexIndex = -1;
+        private GameObject currentGizmos, currentGizmosParent;
+        private GizmosType currentGizmosType = GizmosType.Default;
+        private BaseMeshGeneratorMonoComponent currentBaseMeshGenerator;
 
         enum GizmosType
         {
@@ -28,20 +27,22 @@ namespace AbdullahQadeer.MeshGenerator
         void Start()
         {
             mainCamera = Camera.main;
+            GizmosLayerMask = MeshGeneratorDataLoader.Instance.GizmosLayerMask;
         }
 
-        public void Initialize(LayerMask layerMask)
+        bool UpdateVertices()
         {
-            GizmosLayerMask = layerMask;
-            UpdateVertices();
+            if (currentBaseMeshGenerator != null)
+            {
+                vertices = currentBaseMeshGenerator.BaseMeshGenerator.GeneratedMesh.vertices;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        void UpdateVertices()
-        {
-            vertices = MeshGeneratorTest.Instance.baseMeshGenerator.GeneratedMesh.vertices;
-        }
-
-        // Update is called once per frame
         void LateUpdate()
         {
             if (Input.GetKey(KeyCode.Mouse0))
@@ -63,11 +64,16 @@ namespace AbdullahQadeer.MeshGenerator
                         return;
                     }
 
+                    currentBaseMeshGenerator = raycastHit.collider.GetComponentInParent<BaseMeshGeneratorMonoComponent>();
+                    if(currentBaseMeshGenerator == null)
+                    {
+                        return;
+                    }
+
                     currentGizmos = raycastHit.collider.gameObject;
                     SetGizmosType();
                     currentGizmosParent = GetParentGizmos(currentGizmos);
-                    currentVertexIndex = GetVertex(currentGizmosParent.transform.localPosition, out vertexFound);
-                    //Debug.Log(currentVertexIndex);
+                    vertexFound = GetVertex(currentGizmosParent.transform.localPosition, out currentVertexIndex);
                 }
             }
             else
@@ -77,22 +83,24 @@ namespace AbdullahQadeer.MeshGenerator
                 currentVertexIndex = -1;
             }
 
-            if (checkvertices)
-            {
-                checkvertices = false;
-                UpdateVertices();
-                for (int i = 0; i < vertices.Length; i++)
-                {
-                    Debug.Log(vertices[i]);
-                }
+            #region Testing
+            //if (checkvertices)
+            //{
+            //    checkvertices = false;
+            //    UpdateVertices();
+            //    for (int i = 0; i < vertices.Length; i++)
+            //    {
+            //        Debug.Log(vertices[i]);
+            //    }
 
-                var vertexPositionOnScreen = mainCamera.WorldToScreenPoint(vertices[0]);
-                Debug.Log("vertix position on screen " + vertexPositionOnScreen);
-                vertexPositionOnScreen = mainCamera.ScreenToWorldPoint(vertexPositionOnScreen);
-                Debug.Log("vertix position on world " + vertexPositionOnScreen);
+            //    var vertexPositionOnScreen = mainCamera.WorldToScreenPoint(vertices[0]);
+            //    Debug.Log("vertix position on screen " + vertexPositionOnScreen);
+            //    vertexPositionOnScreen = mainCamera.ScreenToWorldPoint(vertexPositionOnScreen);
+            //    Debug.Log("vertix position on world " + vertexPositionOnScreen);
 
-                Debug.Log("vertex world position " + transform.TransformWorldPoint(vertices[0]));
-            }
+            //    Debug.Log("vertex world position " + transform.TransformWorldPoint(vertices[0]));
+            //}
+            #endregion
         }
 
         void SetGizmosType()
@@ -135,7 +143,6 @@ namespace AbdullahQadeer.MeshGenerator
             switch (currentGizmosType)
             {
                 case GizmosType.Default:
-                    Debug.Log("change default axis");
                     currentGizmosParent.transform.position = worldPointMouse;
                     vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
                     MeshGeneratorTest.Instance.baseMeshGenerator.GeneratedMesh.vertices = vertices;
@@ -169,26 +176,24 @@ namespace AbdullahQadeer.MeshGenerator
             }
         }
 
-        /// <summary>
-        /// Get Vertex World Position
-        /// </summary>
-        /// <param name="worldPosition"></param>
-        /// <param name="found"></param>
-        /// <returns></returns>
-        int GetVertex(Vector3 worldPosition, out bool found)
+        bool GetVertex(Vector3 worldPosition, out int vertexIndex)
         {
-            UpdateVertices();
+            if (!UpdateVertices())
+            {
+                vertexIndex = -1;
+                return false;
+            }
 
             for (int i = 0; i < vertices.Length; i++)
             {
                 if (vertices[i] == worldPosition)
                 {
-                    found = true;
-                    return i;
+                    vertexIndex = i;
+                    return true;
                 }
             }
-            found = false;
-            return -1;
+            vertexIndex = -1;
+            return false;
         }
     }
 }

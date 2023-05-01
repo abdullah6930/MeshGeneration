@@ -15,7 +15,7 @@ namespace AbdullahQadeer.MeshGenerator.Generator
         public float Height { protected set; get; }
         public float Volume { protected set; get; }
 
-        public string Name { private set; get; } = "Generator Mesh";
+        public string Name { private set; get; } = "Generated Mesh";
 
         private bool disposed = false;
 
@@ -47,6 +47,8 @@ namespace AbdullahQadeer.MeshGenerator.Generator
             Renderer = ThisGameObject.AddComponent<MeshRenderer>();
             Renderer.sharedMaterial = new Material(Shader.Find("Standard"));
             MeshFilter = ThisGameObject.AddComponent<MeshFilter>();
+            var baseMeshGeneratorMonoComponent = ThisGameObject.AddComponent<BaseMeshGeneratorMonoComponent>();
+            baseMeshGeneratorMonoComponent.AddBaseMesh(this);
         }
         protected abstract void Initialize(float width, float height, float volume = 0);
 

@@ -20,12 +20,6 @@ namespace AbdullahQadeer.MeshGenerator
         public float Height = 1;
         public float Volume = 1;
 
-        [Header("----Gizmos-----")]
-        [Space]
-        public float sphereSize = 0.2f;
-        public LayerMask gizmosLayerMask;
-        public int layerIndex;
-
         private bool showGizmos;
 
         public bool ShowGizmos
@@ -46,7 +40,6 @@ namespace AbdullahQadeer.MeshGenerator
 
         private VertexGizmos vertexGizmos;
 
-        VertexSelector vertexSelector = null;
         public BaseMeshGenerator baseMeshGenerator { private set; get; } = null;
 
         private void Awake()
@@ -63,26 +56,13 @@ namespace AbdullahQadeer.MeshGenerator
 
         public void Start()
         {
-            if (baseMeshGenerator != null)
-                baseMeshGenerator.Dispose();
+            baseMeshGenerator?.Dispose();
 
             baseMeshGenerator = MeshGeneratorFactory.CreateMeshGenerator(MeshType, Width, Height, Volume);
 
             vertexGizmos?.Clear();
 
-            vertexGizmos = new VertexGizmos(baseMeshGenerator, sphereSize, layerIndex);
-
-            InitvertexSelector();
-        }
-
-        private void InitvertexSelector()
-        {
-            if (vertexSelector == null)
-            {
-                vertexSelector = gameObject.AddComponent<VertexSelector>();
-            }
-
-            vertexSelector.Initialize(gizmosLayerMask);
+            vertexGizmos = new VertexGizmos(baseMeshGenerator);
         }
     }
 

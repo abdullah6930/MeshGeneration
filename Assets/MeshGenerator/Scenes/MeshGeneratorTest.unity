@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 507436065}
   - component: {fileID: 507436064}
+  - component: {fileID: 507436066}
   m_Layer: 0
   m_Name: MeshGenerationTest
   m_TagString: Untagged
@@ -156,11 +157,6 @@ MonoBehaviour:
   Width: 1
   Height: 1
   Volume: 1
-  sphereSize: 0.2
-  gizmosLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  layerIndex: 6
 --- !u!4 &507436065
 Transform:
   m_ObjectHideFlags: 0
@@ -175,6 +171,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &507436066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 507436063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52ad135bd6de9de4098c2c8983eba2ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
