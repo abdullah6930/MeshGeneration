@@ -67,7 +67,7 @@ namespace AbdullahQadeer.MeshGenerator
                     SetGizmosType();
                     currentGizmosParent = GetParentGizmos(currentGizmos);
                     currentVertexIndex = GetVertex(currentGizmosParent.transform.localPosition, out vertexFound);
-                    Debug.Log(currentVertexIndex);
+                    //Debug.Log(currentVertexIndex);
                 }
             }
             else
@@ -142,8 +142,8 @@ namespace AbdullahQadeer.MeshGenerator
                     break;
 
                 case GizmosType.X_Axis:
-                    Debug.Log("change x axis");
                     worldPointMouse.y = worldPoint.y;
+                    worldPointMouse.z = worldPoint.z;
 
                     currentGizmosParent.transform.position = worldPointMouse;
                     vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
@@ -151,7 +151,15 @@ namespace AbdullahQadeer.MeshGenerator
                     break;
 
                 case GizmosType.Y_Axis:
-                    Debug.Log("change y axis");
+                    worldPointMouse.x = worldPoint.x;
+                    worldPointMouse.z = worldPoint.z;
+
+                    currentGizmosParent.transform.position = worldPointMouse;
+                    vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
+                    MeshGeneratorTest.Instance.baseMeshGenerator.GeneratedMesh.vertices = vertices;
+                    break;
+                case GizmosType.Z_Axis:
+                    worldPointMouse.y = worldPoint.y;
                     worldPointMouse.x = worldPoint.x;
 
                     currentGizmosParent.transform.position = worldPointMouse;

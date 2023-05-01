@@ -10,6 +10,7 @@ namespace AbdullahQadeer.MeshGenerator.UI
         [SerializeField] Button selectButton;
         [SerializeField] TMP_InputField widthInputField, heightInputField, volumeInputField;
         [SerializeField] DropdownMeshType meshTypeDropDown;
+        [SerializeField] Toggle gizmosToggle;
 
         private BaseMeshGenerator currentMeshGenerator = null;
         private MeshPreset currentMeshPreset = null;
@@ -17,6 +18,7 @@ namespace AbdullahQadeer.MeshGenerator.UI
         void Start()
         {
             selectButton.onClick.AddListener(OnSelectClick);
+            gizmosToggle.onValueChanged.AddListener(OnGizmosToggleValueChange);
             widthInputField.onValueChanged.AddListener(OnWidthValueChange);
             heightInputField.onValueChanged.AddListener(OnHeightValueChange);
             volumeInputField.onValueChanged.AddListener(OnVolumeValueChange);
@@ -47,6 +49,11 @@ namespace AbdullahQadeer.MeshGenerator.UI
         private void OnSelectClick()
         {
             UIManager.Instance.Show(UIPanelType.MainViewerUI);
+        }
+
+        private void OnGizmosToggleValueChange(bool value)
+        {
+
         }
 
         #region Dropdown list

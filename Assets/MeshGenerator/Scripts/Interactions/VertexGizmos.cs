@@ -14,6 +14,7 @@ namespace AbdullahQadeer.MeshGenerator.Gizmos
         List<GameObject> spheresList = new List<GameObject>();
         List<GameObject> x_AxisList = new List<GameObject>();
         List<GameObject> y_AxisList = new List<GameObject>();
+        List<GameObject> z_AxisList = new List<GameObject>();
 
         public VertexGizmos(BaseMeshGenerator baseMeshGenerator, float sphereSize, int gizmosLayer)
         {
@@ -42,6 +43,7 @@ namespace AbdullahQadeer.MeshGenerator.Gizmos
 
                 x_AxisList.Add(GameObject.Instantiate(MeshGeneratorDataLoader.Instance.X_AxisGizmos, sphere.transform));
                 y_AxisList.Add(GameObject.Instantiate(MeshGeneratorDataLoader.Instance.Y_AxisGizmos, sphere.transform));
+                z_AxisList.Add(GameObject.Instantiate(MeshGeneratorDataLoader.Instance.Z_AxisGizmos, sphere.transform));
             }
         }
 
@@ -55,6 +57,9 @@ namespace AbdullahQadeer.MeshGenerator.Gizmos
 
             foreach (GameObject y_Axis in y_AxisList)
                 y_Axis.SetActive(true);
+
+            foreach (GameObject z_Axis in z_AxisList)
+                z_Axis.SetActive(true);
         }
 
         public void Hide()
@@ -67,6 +72,9 @@ namespace AbdullahQadeer.MeshGenerator.Gizmos
 
             foreach (GameObject y_Axis in y_AxisList)
                 y_Axis.SetActive(false);
+
+            foreach (GameObject z_Axis in z_AxisList)
+                z_Axis.SetActive(false);
         }
 
         public void Clear()
@@ -76,6 +84,7 @@ namespace AbdullahQadeer.MeshGenerator.Gizmos
 
             x_AxisList.Clear();
             y_AxisList.Clear();
+            z_AxisList.Clear();
         }
     }
 
