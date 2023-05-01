@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: DataLoader
   m_EditorClassIdentifier: 
   Default_AxisGizmos: {fileID: 1377220614155788283, guid: cc443fc26b4402545aa64d9d794d6ce0, type: 3}
-  X_AxisGizmos: {fileID: 3739840771740155661, guid: ae0bb8c69f86ecb4e8af868d97b362a4, type: 3}
-  Y_AxisGizmos: {fileID: 2728398293876408396, guid: 431a72afbfb23b04088717d76c875113, type: 3}
-  Z_AxisGizmos: {fileID: 3601051830069715501, guid: 531f777ee8c1c1e41893fd55c0d92777, type: 3}
   DEFAULT_GIZMOS: Default_Gizmos
   X_AXIS_GIZMOS: X_Axis_Gizmos
   Y_AXIS_GIZMOS: Y_Axis_Gizmos
@@ -30,6 +27,10 @@ MonoBehaviour:
     height: 1
     volume: 1
   - meshType: 1
+    width: 1
+    height: 1
+    volume: 1
+  - meshType: 3
     width: 1
     height: 1
     volume: 1

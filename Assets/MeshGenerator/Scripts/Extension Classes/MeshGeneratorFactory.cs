@@ -13,6 +13,8 @@ namespace AbdullahQadeer.MeshGenerator
                     return new BoxMeshGenerator(meshPreset, name);
                 case MeshGeneratorType.Quad:
                     return new QuadMeshGenerator(meshPreset, name);
+                case MeshGeneratorType.Pyramid:
+                    return new PyramidMeshGenerator(meshPreset, name);
                 default:
                     throw new ArgumentException("Invalid mesh type");
             }
@@ -26,6 +28,8 @@ namespace AbdullahQadeer.MeshGenerator
                     return new BoxMeshGenerator(width, height, volume, name);
                 case MeshGeneratorType.Quad:
                     return new QuadMeshGenerator(width, height, name);
+                case MeshGeneratorType.Pyramid:
+                    return new PyramidMeshGenerator(width, height, volume, name);
                 default:
                     throw new ArgumentException("Invalid mesh type");
             }

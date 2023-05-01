@@ -75,6 +75,10 @@ namespace AbdullahQadeer.MeshGenerator.Generator
             vertexGizmos.SetActive(value);
         }
 
+        public void SetActiveVertexIndices(bool value)
+        {
+            vertexGizmos.SetActiveVertexIndices(value);
+        }
         #endregion Gizmos
 
         #region Object Dispose

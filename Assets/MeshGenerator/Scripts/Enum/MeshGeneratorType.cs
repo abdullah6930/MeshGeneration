@@ -4,6 +4,7 @@ namespace AbdullahQadeer.MeshGenerator
     {
         Quad,
         Box,
-        Terrain
+        Terrain,
+        Pyramid
     }
 }

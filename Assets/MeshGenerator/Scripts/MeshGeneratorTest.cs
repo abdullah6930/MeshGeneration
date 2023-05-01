@@ -24,11 +24,32 @@ namespace AbdullahQadeer.MeshGenerator
             get { return showGizmos; }
             set
             {
+                if(value)
+                {
+                    ShowVertexIndices = false;
+                }
                 if (value == showGizmos)
                     return;
 
                 showGizmos = value;
                 baseMeshGenerator?.SetActiveGizmos(showGizmos);
+            }
+        }
+
+        private bool showVertexIndices;
+        public bool ShowVertexIndices
+        {
+            get { return showVertexIndices; }
+            set
+            {
+                if (value)
+                {
+                    ShowGizmos = false;
+                }
+                if (value == showVertexIndices)
+                    return;
+                showVertexIndices = value;
+                baseMeshGenerator?.SetActiveVertexIndices(showVertexIndices);
             }
         }
 
@@ -39,7 +60,32 @@ namespace AbdullahQadeer.MeshGenerator
             baseMeshGenerator?.Dispose();
 
             baseMeshGenerator = MeshGeneratorFactory.CreateMeshGenerator(MeshType, Width, Height, Volume);
+
+            ShowGizmos = true;
         }
+
+#if UNITY_EDITOR
+        private float previousWidth, previousHeight, previousVolume;
+
+        private void OnValidate()
+        {
+            if (Width != previousWidth)
+            {
+                previousWidth = Width;
+                baseMeshGenerator?.UpdateWidth(Width);
+            }
+            if (Height != previousHeight)
+            {
+                previousHeight = Height;
+                baseMeshGenerator?.UpdateHeight(Height);
+            }
+            if (Volume != previousVolume)
+            {
+                previousVolume = Volume;
+                baseMeshGenerator?.UpdateVolume(Volume);
+            }
+        }
+#endif
     }
 
 
@@ -54,6 +100,8 @@ namespace AbdullahQadeer.MeshGenerator
 
             // draw checkbox for the bool
             script.ShowGizmos = EditorGUILayout.Toggle("Show Gizmos", script.ShowGizmos);
+
+            script.ShowVertexIndices = EditorGUILayout.Toggle("Show Vertex Indices", script.ShowVertexIndices);
 
             if (GUILayout.Button("Generate Mesh"))
             {
