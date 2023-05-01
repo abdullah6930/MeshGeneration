@@ -53,7 +53,7 @@ namespace AbdullahQadeer.MeshGenerator.UI
 
         private void OnGizmosToggleValueChange(bool value)
         {
-
+            currentMeshGenerator?.SetActiveGizmos(value);
         }
 
         #region Dropdown list

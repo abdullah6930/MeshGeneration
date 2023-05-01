@@ -7,7 +7,7 @@ namespace AbdullahQadeer.MeshGenerator.UI
     {
         private Dictionary<int, MeshGeneratorType> meshTypeDictionary = new Dictionary<int, MeshGeneratorType>();
 
-        public void ClearOptions()
+        public new void ClearOptions()
         {
             base.ClearOptions();
             meshTypeDictionary.Clear();

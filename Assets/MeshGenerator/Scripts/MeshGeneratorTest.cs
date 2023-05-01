@@ -3,15 +3,12 @@ using UnityEditor;
 #endif
 
 using UnityEngine;
-using AbdullahQadeer.MeshGenerator.Gizmos;
 using AbdullahQadeer.MeshGenerator.Generator;
 
 namespace AbdullahQadeer.MeshGenerator
 {
     public class MeshGeneratorTest : MonoBehaviour
     {
-        public static MeshGeneratorTest Instance = null;
-
         [Header("----Mesh To Generate----")]
         [Space]
         public MeshGeneratorType MeshType;
@@ -31,45 +28,24 @@ namespace AbdullahQadeer.MeshGenerator
                     return;
 
                 showGizmos = value;
-                if (showGizmos)
-                    vertexGizmos.Show();
-                else
-                    vertexGizmos.Hide();
+                baseMeshGenerator?.SetActiveGizmos(showGizmos);
             }
         }
-
-        private VertexGizmos vertexGizmos;
 
         public BaseMeshGenerator baseMeshGenerator { private set; get; } = null;
-
-        private void Awake()
-        {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else
-            {
-                Destroy(this);
-            }
-        }
 
         public void Start()
         {
             baseMeshGenerator?.Dispose();
 
             baseMeshGenerator = MeshGeneratorFactory.CreateMeshGenerator(MeshType, Width, Height, Volume);
-
-            vertexGizmos?.Clear();
-
-            vertexGizmos = new VertexGizmos(baseMeshGenerator);
         }
     }
 
 
 #if UNITY_EDITOR
     [CustomEditor(typeof(MeshGeneratorTest))]
-    public class QuadGenerationEditor : Editor
+    public class MeshGeneratorEditor : Editor
     {
         public override void OnInspectorGUI()
         {

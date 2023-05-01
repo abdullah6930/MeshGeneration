@@ -36,6 +36,7 @@ namespace AbdullahQadeer.MeshGenerator.Generator
             GeneratedMesh.vertices = vertices;
 
             UpdateMesh();
+            UpdateGizmos();
         }
 
         void UpdateMesh()

@@ -4,31 +4,28 @@ using UnityEngine;
 
 namespace AbdullahQadeer.MeshGenerator.Gizmos
 {
-    public class VertexGizmos
+    internal class VertexGizmos
     {
-        Mesh mesh;
-        Transform transform;
-        Vector3 sphereSize;
-
-        List<GameObject> gizmosObjects = new List<GameObject>();
+        private Vector3 sphereSize;
+        private BaseMeshGenerator baseMeshGenerator;
+        
+        private List<GameObject> gizmosObjects = new List<GameObject>();
 
         public VertexGizmos(BaseMeshGenerator baseMeshGenerator)
         {
-            mesh = baseMeshGenerator.GeneratedMesh;
-            transform = baseMeshGenerator.ThisGameObject.transform;
+            this.baseMeshGenerator = baseMeshGenerator;
             sphereSize = Vector3.one * MeshGeneratorDataLoader.Instance.SphereSize;
-
-            AddVertexSpheres();
         }
 
-        void AddVertexSpheres()
+        public void UpdateGizmos()
         {
-            var vertices = mesh.vertices;
+            Clear();
+            var vertices = baseMeshGenerator.GeneratedMesh.vertices;
 
             for (int i = 0; i < vertices.Length; i++)
             {
                 var gizmosObject = GameObject.Instantiate(MeshGeneratorDataLoader.Instance.Default_AxisGizmos);
-                gizmosObject.transform.SetParent(transform);
+                gizmosObject.transform.SetParent(baseMeshGenerator.ThisGameObject.transform);
                 gizmosObject.transform.localScale = sphereSize;
                 gizmosObject.transform.position = vertices[i];
 
@@ -36,19 +33,13 @@ namespace AbdullahQadeer.MeshGenerator.Gizmos
             }
         }
 
-        public void Show()
+        public void SetActive(bool value)
         {
             foreach (GameObject sphere in gizmosObjects)
-                sphere.SetActive(true);
+                sphere.SetActive(value);
         }
 
-        public void Hide()
-        {
-            foreach (GameObject sphere in gizmosObjects)
-                sphere.SetActive(false);
-        }
-
-        public void Clear()
+        private void Clear()
         {
             for (int i = gizmosObjects.Count - 1; i >= 0; i--)
                 GameObject.Destroy(gizmosObjects[i]);

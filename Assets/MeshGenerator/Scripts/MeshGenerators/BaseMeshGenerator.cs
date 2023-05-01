@@ -1,3 +1,4 @@
+using AbdullahQadeer.MeshGenerator.Gizmos;
 using System;
 using UnityEngine;
 
@@ -8,7 +9,6 @@ namespace AbdullahQadeer.MeshGenerator.Generator
         public Mesh GeneratedMesh { private set; get; } = null;
         public MeshFilter MeshFilter { private set; get; } = null;
         public GameObject ThisGameObject { private set; get; }
-
         public MeshRenderer Renderer { private set; get; }
 
         public float Width { protected set; get; }
@@ -19,25 +19,33 @@ namespace AbdullahQadeer.MeshGenerator.Generator
 
         private bool disposed = false;
 
+        private VertexGizmos vertexGizmos = null;
+
         protected BaseMeshGenerator(string name, float width, float height)
         {
-            InitGameObject();
-            GeneratedMesh = new Mesh();
             Width = width;
             Height = height;
-            if(!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(name))
                 Name = name;
+            InitConstructor();
         }
 
         protected BaseMeshGenerator(string name, float width, float height, float volume)
         {
-            InitGameObject();
-            GeneratedMesh = new Mesh();
             Width = width;
             Height = height;
             Volume = volume;
-            if(!string.IsNullOrEmpty(name))
+            if (!string.IsNullOrEmpty(name))
                 Name = name;
+            InitConstructor();
+        }
+
+        private void InitConstructor()
+        {
+            InitGameObject();
+            GeneratedMesh = new Mesh();
+            
+            vertexGizmos = new VertexGizmos(this);
         }
 
         private void InitGameObject()
@@ -55,6 +63,19 @@ namespace AbdullahQadeer.MeshGenerator.Generator
         public abstract void UpdateWidth(float value);
         public abstract void UpdateHeight(float value);
         public abstract void UpdateVolume(float value);
+
+        #region Gizmos
+        protected void UpdateGizmos()
+        {
+            vertexGizmos.UpdateGizmos();
+        }
+
+        public void SetActiveGizmos(bool value)
+        {
+            vertexGizmos.SetActive(value);
+        }
+
+        #endregion Gizmos
 
         #region Object Dispose
         public void Dispose()

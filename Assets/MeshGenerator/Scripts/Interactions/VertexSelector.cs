@@ -13,7 +13,7 @@ namespace AbdullahQadeer.MeshGenerator
         private int currentVertexIndex = -1;
         private GameObject currentGizmos, currentGizmosParent;
         private GizmosType currentGizmosType = GizmosType.Default;
-        private BaseMeshGeneratorMonoComponent currentBaseMeshGenerator;
+        private BaseMeshGeneratorMonoComponent currentBaseMeshGeneratorMono;
 
         enum GizmosType
         {
@@ -32,9 +32,9 @@ namespace AbdullahQadeer.MeshGenerator
 
         bool UpdateVertices()
         {
-            if (currentBaseMeshGenerator != null)
+            if (currentBaseMeshGeneratorMono != null)
             {
-                vertices = currentBaseMeshGenerator.BaseMeshGenerator.GeneratedMesh.vertices;
+                vertices = currentBaseMeshGeneratorMono.BaseMeshGenerator.GeneratedMesh.vertices;
                 return true;
             }
             else
@@ -64,8 +64,8 @@ namespace AbdullahQadeer.MeshGenerator
                         return;
                     }
 
-                    currentBaseMeshGenerator = raycastHit.collider.GetComponentInParent<BaseMeshGeneratorMonoComponent>();
-                    if(currentBaseMeshGenerator == null)
+                    currentBaseMeshGeneratorMono = raycastHit.collider.GetComponentInParent<BaseMeshGeneratorMonoComponent>();
+                    if(currentBaseMeshGeneratorMono == null)
                     {
                         return;
                     }
@@ -136,6 +136,10 @@ namespace AbdullahQadeer.MeshGenerator
 
         void MoveVertex(Vector2 currentPixelCoordinates)
         {
+            if(currentBaseMeshGeneratorMono == null)
+            {
+                return;
+            }
             var worldPoint = transform.TransformWorldPoint(vertices[currentVertexIndex]);
             var vertexPositionOnScreen = mainCamera.WorldToScreenPoint(worldPoint);
             var worldPointMouse = mainCamera.ScreenToWorldPoint(new Vector3(currentPixelCoordinates.x, currentPixelCoordinates.y, vertexPositionOnScreen.z));
@@ -145,7 +149,7 @@ namespace AbdullahQadeer.MeshGenerator
                 case GizmosType.Default:
                     currentGizmosParent.transform.position = worldPointMouse;
                     vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
-                    MeshGeneratorTest.Instance.baseMeshGenerator.GeneratedMesh.vertices = vertices;
+                    currentBaseMeshGeneratorMono.BaseMeshGenerator.GeneratedMesh.vertices = vertices;
                     break;
 
                 case GizmosType.X_Axis:
@@ -154,7 +158,7 @@ namespace AbdullahQadeer.MeshGenerator
 
                     currentGizmosParent.transform.position = worldPointMouse;
                     vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
-                    MeshGeneratorTest.Instance.baseMeshGenerator.GeneratedMesh.vertices = vertices;
+                    currentBaseMeshGeneratorMono.BaseMeshGenerator.GeneratedMesh.vertices = vertices;
                     break;
 
                 case GizmosType.Y_Axis:
@@ -163,7 +167,7 @@ namespace AbdullahQadeer.MeshGenerator
 
                     currentGizmosParent.transform.position = worldPointMouse;
                     vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
-                    MeshGeneratorTest.Instance.baseMeshGenerator.GeneratedMesh.vertices = vertices;
+                    currentBaseMeshGeneratorMono.BaseMeshGenerator.GeneratedMesh.vertices = vertices;
                     break;
                 case GizmosType.Z_Axis:
                     worldPointMouse.y = worldPoint.y;
@@ -171,7 +175,7 @@ namespace AbdullahQadeer.MeshGenerator
 
                     currentGizmosParent.transform.position = worldPointMouse;
                     vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
-                    MeshGeneratorTest.Instance.baseMeshGenerator.GeneratedMesh.vertices = vertices;
+                    currentBaseMeshGeneratorMono.BaseMeshGenerator.GeneratedMesh.vertices = vertices;
                     break;
             }
         }
