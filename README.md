@@ -1,4 +1,4 @@
-# MeshGeneration
+# Mesh Generation
 
 Mesh Generation is a simple Unity Project. This project is primarily for learning purposes. I've created this project to increase my overall knowledge of unity mesh generation and methamitcs. However everyone is allowed to use this project freely.
 
