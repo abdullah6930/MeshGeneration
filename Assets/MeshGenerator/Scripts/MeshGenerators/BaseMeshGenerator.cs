@@ -10,6 +10,7 @@ namespace AbdullahQadeer.MeshGenerator.Generator
         public MeshFilter MeshFilter { private set; get; } = null;
         public GameObject ThisGameObject { private set; get; }
         public MeshRenderer Renderer { private set; get; }
+        internal VertexGizmos vertexGizmos { set; get; } = null;
 
         public float Width { protected set; get; }
         public float Height { protected set; get; }
@@ -19,33 +20,14 @@ namespace AbdullahQadeer.MeshGenerator.Generator
 
         private bool disposed = false;
 
-        private VertexGizmos vertexGizmos = null;
-
-        protected BaseMeshGenerator(string name, float width, float height)
-        {
-            Width = width;
-            Height = height;
-            if (!string.IsNullOrEmpty(name))
-                Name = name;
-            InitConstructor();
-        }
-
-        protected BaseMeshGenerator(string name, float width, float height, float volume)
+        protected BaseMeshGenerator(string name, float width, float height, float volume = 0)
         {
             Width = width;
             Height = height;
             Volume = volume;
             if (!string.IsNullOrEmpty(name))
                 Name = name;
-            InitConstructor();
-        }
-
-        private void InitConstructor()
-        {
             InitGameObject();
-            GeneratedMesh = new Mesh();
-            
-            vertexGizmos = new VertexGizmos(this);
         }
 
         private void InitGameObject()
@@ -55,8 +37,12 @@ namespace AbdullahQadeer.MeshGenerator.Generator
             Renderer = ThisGameObject.AddComponent<MeshRenderer>();
             Renderer.sharedMaterial = new Material(Shader.Find("Standard"));
             MeshFilter = ThisGameObject.AddComponent<MeshFilter>();
-            var baseMeshGeneratorMonoComponent = ThisGameObject.AddComponent<BaseMeshGeneratorMonoComponent>();
-            baseMeshGeneratorMonoComponent.AddBaseMesh(this);
+            GeneratedMesh = new Mesh();
+            vertexGizmos = new VertexGizmos(this);
+
+            var vertexGizmosMono = ThisGameObject.AddComponent<VertexGizmosMono>();
+            vertexGizmosMono.AddBaseMesh(this);
+
         }
         protected abstract void Initialize(float width, float height, float volume = 0);
 

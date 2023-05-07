@@ -7,9 +7,9 @@ namespace AbdullahQadeer.MeshGenerator.Gizmos
     internal class VertexGizmos
     {
         private Vector3 sphereSize;
-        private BaseMeshGenerator baseMeshGenerator;
+        private MeshData meshData;
         
-        private List<VertexGizmosData> gizmosObjects = new List<VertexGizmosData>();
+        private List<VertexGizmosData> gizmosObjects = new ();
 
         private struct VertexGizmosData
         {
@@ -19,23 +19,49 @@ namespace AbdullahQadeer.MeshGenerator.Gizmos
             public MeshRenderer[] xyzMeshRenderers;
         }
 
+        private class MeshData
+        {
+            public Mesh Mesh { private set; get; }
+            public Transform MeshTransforn { private set; get; }
+
+            public MeshData(Mesh mesh, Transform meshTransform)
+            {
+                Mesh = mesh;
+                MeshTransforn = meshTransform;
+            }
+
+            public MeshData(BaseMeshGenerator baseMeshGenerator)
+            {
+                Mesh = baseMeshGenerator.GeneratedMesh;
+                MeshTransforn = baseMeshGenerator.ThisGameObject.transform;
+            }
+        }
+
+
         public VertexGizmos(BaseMeshGenerator baseMeshGenerator)
         {
-            this.baseMeshGenerator = baseMeshGenerator;
+            meshData = new MeshData(baseMeshGenerator);
             sphereSize = Vector3.one * MeshGeneratorDataLoader.Instance.SphereSize;
+        }
+
+        public VertexGizmos(Mesh mesh, Transform meshTransform)
+        {
+            meshData = new MeshData(mesh, meshTransform);
+            sphereSize = Vector3.one * MeshGeneratorDataLoader.Instance.SphereSize;
+            UpdateGizmos();
         }
 
         public void UpdateGizmos()
         {
             Clear();
-            var vertices = baseMeshGenerator.GeneratedMesh.vertices;
+            var vertices = meshData.Mesh.vertices;
 
             for (int i = 0; i < vertices.Length; i++)
             {
                 var gizmosObject = GameObject.Instantiate(MeshGeneratorDataLoader.Instance.Default_AxisGizmos);
-                gizmosObject.transform.SetParent(baseMeshGenerator.ThisGameObject.transform);
+                gizmosObject.transform.SetParent(meshData.MeshTransforn);
                 gizmosObject.transform.localScale = sphereSize;
-                gizmosObject.transform.position = vertices[i];
+                gizmosObject.transform.localPosition = vertices[i];
                 
                 List<MeshRenderer> renderers = new List<MeshRenderer>();
                 renderers.Add(gizmosObject.GetComponent<MeshRenderer>());

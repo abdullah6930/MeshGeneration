@@ -1,5 +1,4 @@
-using AbdullahQadeer.Extensions;
-using AbdullahQadeer.MeshGenerator.Generator;
+using AbdullahQadeer.MeshGenerator.Gizmos;
 using UnityEngine;
 
 namespace AbdullahQadeer.MeshGenerator
@@ -9,11 +8,11 @@ namespace AbdullahQadeer.MeshGenerator
         private Camera mainCamera;
         private LayerMask GizmosLayerMask;
         private Vector3[] vertices;
-        private bool vertexFound, checkvertices;
+        private bool vertexFound;
         private int currentVertexIndex = -1;
         private GameObject currentGizmos, currentGizmosParent;
         private GizmosType currentGizmosType = GizmosType.Default;
-        private BaseMeshGeneratorMonoComponent currentBaseMeshGeneratorMono;
+        private VertexGizmosMono currentVertexGizmos;
 
         enum GizmosType
         {
@@ -23,7 +22,6 @@ namespace AbdullahQadeer.MeshGenerator
             Z_Axis
         }
 
-        // Start is called before the first frame update
         void Start()
         {
             mainCamera = Camera.main;
@@ -32,9 +30,9 @@ namespace AbdullahQadeer.MeshGenerator
 
         bool UpdateVertices()
         {
-            if (currentBaseMeshGeneratorMono != null)
+            if (currentVertexGizmos != null)
             {
-                vertices = currentBaseMeshGeneratorMono.BaseMeshGenerator.GeneratedMesh.vertices;
+                vertices = currentVertexGizmos.GetMeshVertices();
                 return true;
             }
             else
@@ -64,8 +62,8 @@ namespace AbdullahQadeer.MeshGenerator
                         return;
                     }
 
-                    currentBaseMeshGeneratorMono = raycastHit.collider.GetComponentInParent<BaseMeshGeneratorMonoComponent>();
-                    if(currentBaseMeshGeneratorMono == null)
+                    currentVertexGizmos = raycastHit.collider.GetComponentInParent<VertexGizmosMono>();
+                    if(currentVertexGizmos == null)
                     {
                         return;
                     }
@@ -136,11 +134,11 @@ namespace AbdullahQadeer.MeshGenerator
 
         void MoveVertex(Vector2 currentPixelCoordinates)
         {
-            if(currentBaseMeshGeneratorMono == null)
+            if(currentVertexGizmos == null)
             {
                 return;
             }
-            var worldPoint = transform.TransformWorldPoint(vertices[currentVertexIndex]);
+            var worldPoint = currentVertexGizmos.transform.TransformPoint(vertices[currentVertexIndex]);
             var vertexPositionOnScreen = mainCamera.WorldToScreenPoint(worldPoint);
             var worldPointMouse = mainCamera.ScreenToWorldPoint(new Vector3(currentPixelCoordinates.x, currentPixelCoordinates.y, vertexPositionOnScreen.z));
 
@@ -148,36 +146,29 @@ namespace AbdullahQadeer.MeshGenerator
             {
                 case GizmosType.Default:
                     currentGizmosParent.transform.position = worldPointMouse;
-                    vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
-                    currentBaseMeshGeneratorMono.BaseMeshGenerator.GeneratedMesh.vertices = vertices;
                     break;
 
                 case GizmosType.X_Axis:
                     worldPointMouse.y = worldPoint.y;
                     worldPointMouse.z = worldPoint.z;
-
                     currentGizmosParent.transform.position = worldPointMouse;
-                    vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
-                    currentBaseMeshGeneratorMono.BaseMeshGenerator.GeneratedMesh.vertices = vertices;
                     break;
 
                 case GizmosType.Y_Axis:
                     worldPointMouse.x = worldPoint.x;
                     worldPointMouse.z = worldPoint.z;
-
                     currentGizmosParent.transform.position = worldPointMouse;
-                    vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
-                    currentBaseMeshGeneratorMono.BaseMeshGenerator.GeneratedMesh.vertices = vertices;
                     break;
+
                 case GizmosType.Z_Axis:
                     worldPointMouse.y = worldPoint.y;
                     worldPointMouse.x = worldPoint.x;
-
                     currentGizmosParent.transform.position = worldPointMouse;
-                    vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
-                    currentBaseMeshGeneratorMono.BaseMeshGenerator.GeneratedMesh.vertices = vertices;
                     break;
             }
+
+            vertices[currentVertexIndex] = currentGizmosParent.transform.localPosition;
+            currentVertexGizmos.SetMeshVertices(vertices);
         }
 
         bool GetVertex(Vector3 worldPosition, out int vertexIndex)
