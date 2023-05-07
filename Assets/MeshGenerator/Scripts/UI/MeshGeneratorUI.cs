@@ -1,3 +1,4 @@
+using AbdullahQadeer.Extensions;
 using AbdullahQadeer.MeshGenerator.Generator;
 using TMPro;
 using UnityEngine;
@@ -7,7 +8,7 @@ namespace AbdullahQadeer.MeshGenerator.UI
 {
     public class MeshGeneratorUI : UIPanel
     {
-        [SerializeField] Button selectButton;
+        [SerializeField] Button selectButton, saveMeshButton;
         [SerializeField] TMP_InputField widthInputField, heightInputField, volumeInputField;
         [SerializeField] DropdownMeshType meshTypeDropDown;
         [SerializeField] Toggle gizmosToggle;
@@ -18,6 +19,7 @@ namespace AbdullahQadeer.MeshGenerator.UI
         void Start()
         {
             selectButton.onClick.AddListener(OnSelectClick);
+            saveMeshButton.onClick.AddListener(OnSaveMeshClick);
             gizmosToggle.onValueChanged.AddListener(OnGizmosToggleValueChange);
             widthInputField.onValueChanged.AddListener(OnWidthValueChange);
             heightInputField.onValueChanged.AddListener(OnHeightValueChange);
@@ -49,6 +51,21 @@ namespace AbdullahQadeer.MeshGenerator.UI
         private void OnSelectClick()
         {
             UIManager.Instance.Show(UIPanelType.MainViewerUI);
+        }
+
+        private void OnSaveMeshClick()
+        {
+            if (currentMeshGenerator == null)
+            {
+                Debug.LogError("baseMeshGenerator not Found");
+                return;
+            }
+            if (currentMeshGenerator.GeneratedMesh == null)
+            {
+                Debug.LogError("baseMeshGenerator.GeneratedMesh not Found");
+                return;
+            }
+            currentMeshGenerator.GeneratedMesh.AskToSaveMesh();
         }
 
         private void OnGizmosToggleValueChange(bool value)

@@ -84,8 +84,9 @@ namespace AbdullahQadeer.MeshGenerator.Generator
                 }
 
                 // dispose unmanaged resources
-                GeneratedMesh.Clear();
-                GameObject.Destroy(ThisGameObject);
+                GeneratedMesh?.Clear();
+                if(ThisGameObject)
+                    GameObject.Destroy(ThisGameObject);
 
                 disposed = true;
             }

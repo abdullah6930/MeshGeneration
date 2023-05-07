@@ -4,6 +4,7 @@ using UnityEditor;
 
 using UnityEngine;
 using AbdullahQadeer.MeshGenerator.Generator;
+using AbdullahQadeer.Extensions;
 
 namespace AbdullahQadeer.MeshGenerator
 {
@@ -64,6 +65,21 @@ namespace AbdullahQadeer.MeshGenerator
             ShowGizmos = true;
         }
 
+        public void SaveMesh()
+        {
+            if (baseMeshGenerator == null)
+            {
+                Debug.LogError("baseMeshGenerator not Found");
+                return;
+            }
+            if (baseMeshGenerator.GeneratedMesh == null)
+            {
+                Debug.LogError("baseMeshGenerator.GeneratedMesh not Found");
+                return;
+            }
+            baseMeshGenerator.GeneratedMesh.AskToSaveMesh();
+        }
+
 #if UNITY_EDITOR
         private float previousWidth, previousHeight, previousVolume;
 
@@ -111,6 +127,11 @@ namespace AbdullahQadeer.MeshGenerator
                 {
                     script.Start();
                 }
+            }
+
+            if (EditorApplication.isPlaying && GUILayout.Button("Save Mesh"))
+            {
+                script.SaveMesh();
             }
         }
     }

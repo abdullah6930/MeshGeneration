@@ -31,6 +31,9 @@ namespace AbdullahQadeer.MeshGenerator
         public float SphereSize = 0.2f;
 
         [Space]
+        public bool EnableRightClickMeshSave;
+
+        [Space]
         public MeshPreset[] MeshPresetsList;
 
         public bool TryGetMeshPreset(MeshGeneratorType meshType, out MeshPreset meshPreset)
