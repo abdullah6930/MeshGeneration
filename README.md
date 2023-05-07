@@ -8,6 +8,7 @@ Currently user's in unity can change mesh vertices only in edit mode that too wi
 1. Generate mesh from predefined shapes.
 2. Change mesh vertices through game mode with mouse/touch input.
 3. Change Mesh Width, Height and volume from UI.
+4. Change vertex positions of any custom mesh.
 
 # Types of mesh that can be generated as of now
 1. Quad
@@ -15,7 +16,6 @@ Currently user's in unity can change mesh vertices only in edit mode that too wi
 3. Pyramid
 
 # Targets for the future
-1. Ability to change vertex positions of any custom mesh.
-2. Terrain Generation
-3. Ability to save shapes locally
-4. Buildings Generation
+1. Terrain Generation
+2. Ability to save shapes locally
+3. Buildings Generation
