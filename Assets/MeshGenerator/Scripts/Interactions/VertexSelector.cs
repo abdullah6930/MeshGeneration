@@ -1,5 +1,7 @@
+using AbdullahQadeer.InputSystem;
 using AbdullahQadeer.MeshGenerator.Gizmos;
 using UnityEngine;
+using EventManager = AbdullahQadeer.Events.EvenManager;
 
 namespace AbdullahQadeer.MeshGenerator
 {
@@ -13,6 +15,7 @@ namespace AbdullahQadeer.MeshGenerator
         private GameObject currentGizmos, currentGizmosParent;
         private GizmosType currentGizmosType = GizmosType.Default;
         private VertexGizmosMono currentVertexGizmos;
+        private Vector2 previousInputPosition;
 
         enum GizmosType
         {
@@ -22,11 +25,69 @@ namespace AbdullahQadeer.MeshGenerator
             Z_Axis
         }
 
+        #region MonoBehaviour Methods
         void Start()
         {
             mainCamera = Camera.main;
             GizmosLayerMask = MeshGeneratorDataLoader.Instance.GizmosLayerMask;
+            if(!InputManager.IsInitialized)
+            {
+                InputManager.Initialze();
+            }
         }
+
+        private void OnEnable()
+        {
+            EventManager.OnTouchInput += HandleTouchInput;
+            EventManager.OnMouseInput += HandleMouseInput;
+
+            EventManager.OnTouchInputEnded += HandleTouchInputEnded;
+            EventManager.OnMouseInputEnded += HandleMouseInputEnded;
+        }
+
+        private void OnDisable()
+        {
+            EventManager.OnTouchInput -= HandleTouchInput;
+            EventManager.OnMouseInput -= HandleMouseInput;
+
+            EventManager.OnTouchInputEnded -= HandleTouchInputEnded;
+            EventManager.OnMouseInputEnded -= HandleMouseInputEnded;
+        }
+        #endregion MonoBehaviour Methods
+
+        #region Input Handling
+        private void HandleTouchInput(Vector2 position)
+        {
+            if (position == previousInputPosition)
+            {
+                return;
+            }
+
+            OnInputReceived(position);
+            previousInputPosition = position;
+        }
+
+        private void HandleMouseInput(Vector2 position)
+        {
+            if (position == previousInputPosition)
+            {
+                return;
+            }
+
+            OnInputReceived(position);
+            previousInputPosition = position;
+        }
+
+        private void HandleTouchInputEnded()
+        {
+            ResetInput();
+        }
+
+        private void HandleMouseInputEnded()
+        {
+            ResetInput();
+        }
+        #endregion Input Handling
 
         bool UpdateVertices()
         {
@@ -41,64 +102,37 @@ namespace AbdullahQadeer.MeshGenerator
             }
         }
 
-        void LateUpdate()
+        void OnInputReceived(Vector2 currentPixelCoordinates)
         {
-            if (Input.GetKey(KeyCode.Mouse0))
+            if (vertexFound && currentVertexIndex != -1 && currentGizmos != null)
             {
-                var currentPixelCoordinates = Input.mousePosition;
+                MoveVertex(currentPixelCoordinates);
+                return;
+            }
+            var ray = mainCamera.ScreenPointToRay(currentPixelCoordinates);
 
-                if (vertexFound && currentVertexIndex != -1 && currentGizmos != null)
+            if (Physics.Raycast(ray, out RaycastHit raycastHit, GizmosLayerMask))
+            {
+                currentVertexGizmos = raycastHit.collider.GetComponentInParent<VertexGizmosMono>();
+                if (currentVertexGizmos != null)
                 {
-                    MoveVertex(currentPixelCoordinates);
-                    return;
-                }
-
-                var ray = mainCamera.ScreenPointToRay(currentPixelCoordinates);
-
-                if (Physics.Raycast(ray, out RaycastHit raycastHit, GizmosLayerMask))
-                {
-                    if (raycastHit.collider == null)
-                    {
-                        return;
-                    }
-
-                    currentVertexGizmos = raycastHit.collider.GetComponentInParent<VertexGizmosMono>();
-                    if(currentVertexGizmos == null)
-                    {
-                        return;
-                    }
-
                     currentGizmos = raycastHit.collider.gameObject;
                     SetGizmosType();
                     currentGizmosParent = GetParentGizmos(currentGizmos);
                     vertexFound = GetVertex(currentGizmosParent.transform.localPosition, out currentVertexIndex);
+                    if (vertexFound)
+                    {
+                        MoveVertex(currentPixelCoordinates);
+                    }
                 }
             }
-            else
-            {
-                vertexFound = false;
-                currentGizmos = null;
-                currentVertexIndex = -1;
-            }
+        }
 
-            #region Testing
-            //if (checkvertices)
-            //{
-            //    checkvertices = false;
-            //    UpdateVertices();
-            //    for (int i = 0; i < vertices.Length; i++)
-            //    {
-            //        Debug.Log(vertices[i]);
-            //    }
-
-            //    var vertexPositionOnScreen = mainCamera.WorldToScreenPoint(vertices[0]);
-            //    Debug.Log("vertix position on screen " + vertexPositionOnScreen);
-            //    vertexPositionOnScreen = mainCamera.ScreenToWorldPoint(vertexPositionOnScreen);
-            //    Debug.Log("vertix position on world " + vertexPositionOnScreen);
-
-            //    Debug.Log("vertex world position " + transform.TransformWorldPoint(vertices[0]));
-            //}
-            #endregion
+        void ResetInput()
+        {
+            vertexFound = false;
+            currentGizmos = null;
+            currentVertexIndex = -1;
         }
 
         void SetGizmosType()

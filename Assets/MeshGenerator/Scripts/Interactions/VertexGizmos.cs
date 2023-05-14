@@ -7,7 +7,7 @@ namespace AbdullahQadeer.MeshGenerator.Gizmos
     internal class VertexGizmos
     {
         private Vector3 sphereSize;
-        private MeshData meshData;
+        private readonly MeshData meshData;
         
         private List<VertexGizmosData> gizmosObjects = new ();
 
@@ -62,9 +62,11 @@ namespace AbdullahQadeer.MeshGenerator.Gizmos
                 gizmosObject.transform.SetParent(meshData.MeshTransforn);
                 gizmosObject.transform.localScale = sphereSize;
                 gizmosObject.transform.localPosition = vertices[i];
-                
-                List<MeshRenderer> renderers = new List<MeshRenderer>();
-                renderers.Add(gizmosObject.GetComponent<MeshRenderer>());
+
+                List<MeshRenderer> renderers = new()
+                {
+                    gizmosObject.GetComponent<MeshRenderer>()
+                };
                 for (int j = 0; j < 3; j++)
                 {
                     renderers.Add(gizmosObject.transform.GetChild(j).GetComponent<MeshRenderer>());
@@ -93,10 +95,15 @@ namespace AbdullahQadeer.MeshGenerator.Gizmos
             foreach (var vertexGizmosData in gizmosObjects)
             {
                 foreach (var renderer in vertexGizmosData.xyzMeshRenderers)
-                    renderer.enabled = value;
-
+                {
+                    if (renderer)
+                        renderer.enabled = value;
+                }
                 foreach (var collider in vertexGizmosData.xyzColliders)
-                    collider.enabled = value;
+                {
+                    if(collider)
+                        collider.enabled = value;
+                }
             }
         }
 
