@@ -21,6 +21,13 @@ namespace AbdullahQadeer.Extensions
 #if UNITY_EDITOR
             // Handle file saving in the Unity Editor
             filePath = UnityEditor.EditorUtility.SaveFilePanel("Save Mesh", "", "savedMesh.obj", "obj");
+#elif UNITY_ANDROID
+    // Handle file saving on Android
+    AndroidJavaClass environment = new ("android.os.Environment");
+    AndroidJavaObject directory = environment.CallStatic<AndroidJavaObject>("getExternalStoragePublicDirectory", environment.GetStatic<string>("DIRECTORY_DOWNLOADS"));
+    string path = directory.Call<string>("getAbsolutePath");
+    string fileName = "savedMesh.obj";
+    filePath = Path.Combine(path, fileName);
 #else
             Debug.LogError("File saving not supported in the current platform.");
 #endif
