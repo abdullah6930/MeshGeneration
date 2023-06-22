@@ -1,7 +1,5 @@
 # Mesh Generation
 
-Mesh Generation is a simple Unity Project. This project is primarily for learning purposes. I've created this project to increase my overall knowledge of unity mesh generation and mathematics. However everyone is allowed to use this project freely.
-
 Currently user's in unity can change mesh vertices only in edit mode that too with the help of some packages. This project is designed to help users change vertex positions in play mode through Game Window. User's can change vertex positions on x,y and z axis just like they move gameeobjects in editor. The idea behind changing mesh vertices in play mode is to make it easier to be integrated into any project that wants to allow users to interact with 3D objects.
 
 https://user-images.githubusercontent.com/46685732/236664784-7afb0f49-79ff-4e50-8347-2c03441d4bb1.mp4
